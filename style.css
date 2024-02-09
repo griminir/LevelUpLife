@@ -1,0 +1,10 @@
+div {
+  margin-bottom: 10px;
+}
+
+.profilePic {
+  width: 50px;
+}
+.topBar {
+  display: flex;
+}
