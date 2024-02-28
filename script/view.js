@@ -1,9 +1,16 @@
-if (model.page === 'main') {
-  showMainPage();
-} else {
-  showFirstPage();
+whatPage();
+
+function whatPage() {
+  if (getSavedModel) {
+    model = getSavedModel;
+  }
+  if (model.page === 'main') {
+    showMainPage();
+  } else {
+    signUpScreen();
+  }
 }
-showFirstPage();
+
 function showFirstPage() {
   let html = /*html*/ `
   <h1>Player creation</h1>
@@ -43,43 +50,122 @@ function showMainPage() {
   <div class="topBar">
     <div><img class="profilePic" src="${profilepicture}" alt="profilepicture"</div>
     <div>${model.personYou.name || 'viktor'}</div>
-    <div>${level}</div>
+    <div>level:${model.personYou.level}</div>
   </div>
 
-  <div id="quest1">${questCard()}</div>
-  <div id="quest2">${questCard()}</div>
+  <div id="quest1">${model.quest.quest1} </div>
+  <div id="quest2">${model.quest.quest2} </div>
+  <button onclick="logOut()">Log out</Button>
   `;
   div.innerHTML = html;
+
+  dayFinished();
 }
 
-// function questCard(questNumber) {
-//   let quest = /*html*/ `
-//     <div>hei</div>
-//   `;
-//   return quest;
-// }
 function randomQuest() {
   questNumber = Math.floor(Math.random() * questList.length);
   return questNumber;
 }
 
-function questCard() {
+function questCardTraining() {
   randomQuest();
-  let quest = '';
   switch (questNumber) {
     case 0:
-      quest = /*html*/ `
+      model.quest.quest1 = /*html*/ `
         <div><input onchange="changeSitups(this)" type="number" value="${amountOfSitups}">/10 situps</div>
         <div><input onchange="changePushups(this)" type="number" value="${amountOfPushups}">/10 pushups</div>
         <div><input onchange="changeSteps(this)" type="number" value="${amountOfSteps}">/10 steps</div>
+        <button onclick='quest1Done()'>compleate?</button>
       `;
-      return quest;
+      return model.quest.quest1;
       break;
     case 1:
-      quest = /*html*/ `
-        <div>hallo</div>
+      model.quest.quest1 = /*html*/ `
+        <div>løp et marathon</div>
+        <button onclick='quest1Done()'>compleate?</button>
       `;
-      return quest;
+      return model.quest.quest1;
       break;
   }
+}
+
+function questCardWellness() {
+  randomQuest();
+  switch (questNumber) {
+    case 0:
+      model.quest.quest2 = /*html*/ `
+        <div>våkne klokka 5</div>
+        <button onclick="quest2Done()">compleate?</button>
+      `;
+      return model.quest.quest2;
+      break;
+
+    case 1:
+      model.quest.quest2 = /*html*/ `
+        <div>mediter 10 min</div>
+        <button onclick="quest2Done()">compleate?</button>
+      `;
+      return model.quest.quest2;
+      break;
+  }
+}
+
+function amountOfQuests() {
+  for (let i = 0; i < questList.length; i++) {
+    if (i == 0) {
+      questCardTraining();
+    } else if (i == 1) {
+      questCardWellness();
+    }
+  }
+}
+
+function signUpScreen() {
+  div.innerHTML = /*html*/ `
+    <div class="container">
+      <div class="form-box">
+        <h1>Sign up</h1>
+        <form>
+            <div class="input-field">
+              <i class="fa-solid fa-envelope"></i>
+              <input type="email" id="email" placeholder="Email Id">
+            </div>
+
+            <div class="input-field">
+              <i class="fa-solid fa-lock"></i>
+              <input type="password" id="password" placeholder="Password">
+            </div>
+          <div class="button-field">
+            <button onclick="signUp()">Sign up</button>
+            <button onclick="signInScreen()">Sign in</button>
+          </div>
+        </form>
+      </div> 
+    </div>
+  `;
+}
+
+function signInScreen() {
+  div.innerHTML = /*html*/ `
+    <div class="container">
+      <div class="form-box">
+        <h1>Log in</h1>
+        <form>
+            <div class="input-field">
+              <i class="fa-solid fa-envelope"></i>
+              <input type="email" id="email" placeholder="Your Email Id">
+            </div>
+
+            <div class="input-field">
+              <i class="fa-solid fa-lock"></i>
+              <input type="password" id="password" placeholder="Password">
+            </div>
+          <div class="button-field">
+          <button onclick="signUpScreen()">Sign up</button>
+            <button onclick="logIn()">Log in</button>
+          </div>
+        </form>
+      </div> 
+    </div>
+  `;
 }
