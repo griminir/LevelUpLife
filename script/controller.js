@@ -1,3 +1,65 @@
+//100% experimentelt fra dette punktet til neste kommentar
+const express = require('express');
+const {
+  createItem,
+  readItems,
+  updateItem,
+  deleteItem,
+} = require('./dbFunctions.js');
+let cors = require('cors');
+const app = express();
+app.use(cors());
+
+app.use(express.json());
+
+app.get('/users', (req, res) => {
+  readItems((err, rows) => {
+    if (err) {
+      res.status(500).send(err.message);
+    } else {
+      res.status(200).json(rows);
+    }
+  });
+});
+
+app.post('/users', (req, res) => {
+  const { email, password } = req.body;
+  createItem(email, password, (err, data) => {
+    if (err) {
+      res.status(500).send(err.message);
+    } else {
+      res.status(201).send(`Item is added ID : ${data.id}`);
+    }
+  });
+});
+
+app.put('/users/:id', (req, res) => {
+  const { email, password } = req.body;
+  updateItem(req.params.id, email, password, (err) => {
+    if (err) {
+      res.status(500).send(err.message);
+    } else {
+      res.status(200).send('Updated item');
+    }
+  });
+});
+
+app.delete('/users/:id', (req, res) => {
+  deleteItem(req.params.id, (err) => {
+    if (err) {
+      res.status(500).send(err.message);
+    } else {
+      res.status(200).send('Deleted');
+    }
+  });
+});
+
+app.listen(3000, () => {
+  console.log('server is running');
+});
+
+//experimentasjon ferdig
+
 function submitInfo() {
   getName();
   getWeight();
@@ -125,28 +187,20 @@ function changeToMain() {
   localStorage.setItem('page', model.page);
 }
 
-//100% experimentelt
-const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('database/database.db');
-
-//creates a table to store users
-db.serialize(() => {
-  db.run(
-    'CREATE TABLE IF NOT EXISTS users (id PRIMARY KEY, email TEXT, password TEXT)'
-  );
-});
-
-function addUser(number, email, password) {
-  const stmt = db.prepare('INSERT INTO users VALUES (?, ?, ?)');
-  stmt.run(number, email, password);
-  stmt.finalize();
+async function saveToServer(params) {
+  let res = await fetch('http://localhost:3000/users', {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify({ email: 'bjarne@gmail.com', password: '2' }),
+  })
+    .then(function (res) {
+      console.log(res);
+    })
+    .catch(function (res) {
+      console.log(res);
+    });
+  console.log(res);
 }
-
-function updateUser(newEmail, newPassword) {
-  const stmt = db.prepare(
-    'UPDATE users SET email = ?, password = ? WHERE id = 1'
-  );
-  stmt.run(newEmail, newPassword);
-  stmt.finalize();
-}
-addUser('1', 'admin@gmail.com', 'blood3');
