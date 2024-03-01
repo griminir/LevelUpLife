@@ -14,9 +14,17 @@ const readItems = (callback) => {
   db.all(sql, [], callback);
 };
 
+// const updateItem = (id, email, password, callback) => {
+//   const sql = `UPDATE users SET email = ?, password = ?  WHERE id = ?`;
+//   db.run(sql[(email, password, id)], callback);
+// };
+
 const updateItem = (id, email, password, callback) => {
-  const sql = `UPDATE users SET email = ?, password = ?,  WHERE id = ?`;
-  db.run(sql[(email, password, id)], callback);
+  console.log(id);
+  console.log(email);
+  console.log(password);
+  const sql = `UPDATE users SET email = ?, password = ? WHERE id = ?`;
+  db.run(sql, [email, password, id], callback);
 };
 
 const deleteItem = (id, callback) => {

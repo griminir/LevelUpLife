@@ -35,9 +35,12 @@ app.post('/users', (req, res) => {
 
 app.put('/users/:id', (req, res) => {
   const { email, password } = req.body;
+  console.log('ID: ' + req.params.id);
   updateItem(req.params.id, email, password, (err) => {
     if (err) {
+      console.log('ERROR: ' + err);
       res.status(500).send(err.message);
+      console.log(req.params.id);
     } else {
       res.status(200).send('Updated item');
     }
@@ -187,14 +190,18 @@ function changeToMain() {
   localStorage.setItem('page', model.page);
 }
 
-async function saveToServer(params) {
-  let res = await fetch('http://localhost:3000/users', {
+//100% eksperimentelt men funker for POST
+async function saveToServer() {
+  let res = await fetch(`http://localhost:3000/users`, {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
     },
     method: 'POST',
-    body: JSON.stringify({ email: 'bjarne@gmail.com', password: '2' }),
+    body: JSON.stringify({
+      email: 'admin@gmail.com',
+      password: 'blood3',
+    }),
   })
     .then(function (res) {
       console.log(res);
