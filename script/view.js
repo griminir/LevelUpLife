@@ -104,7 +104,7 @@ function signInScreen() {
             </div>
           <div class="button-field">
           <button onclick="signUpScreen()">Sign up</button>
-            <button onclick="logIn()">Log in</button>
+            <button onclick="getLogIn()">Log in</button>
           </div>
         </form>
       </div> 

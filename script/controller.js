@@ -33,7 +33,7 @@ app.post('/users', (req, res) => {
   });
 });
 
-app.put('/users/:id', (req, res) => {
+app.put('/users', (req, res) => {
   const { email, password } = req.body;
   console.log('ID: ' + req.params.id);
   updateItem(req.params.id, email, password, (err) => {
@@ -47,7 +47,7 @@ app.put('/users/:id', (req, res) => {
   });
 });
 
-app.delete('/users/:id', (req, res) => {
+app.delete('/users', (req, res) => {
   deleteItem(req.params.id, (err) => {
     if (err) {
       res.status(500).send(err.message);
@@ -146,6 +146,7 @@ function newDay() {
 function signUp() {
   getEmail();
   getPassword();
+  updateToServer();
   if (model.user.email != 'admin' && model.user.password != 'blood3') {
     saveInfoToMemory();
     showFirstPage();
@@ -166,16 +167,16 @@ function getPassword() {
   }
 }
 
-function logIn() {
-  if (
-    document.getElementById('email').value == model.user.email &&
-    document.getElementById('password').value == model.user.password
-  ) {
-    changeToMain();
-    saveInfoToMemory();
-    showMainPage();
-  }
-}
+// function logIn(check) {
+//   if (
+//     document.getElementById('email').value == check.email &&
+//     document.getElementById('password').value == check.password
+//   ) {
+//     changeToMain();
+//     saveInfoToMemory();
+//     showMainPage();
+//   }
+// }
 
 function logOut() {
   model.page = '';
@@ -210,4 +211,43 @@ async function saveToServer() {
       console.log(res);
     });
   console.log(res);
+}
+saveToServer();
+
+async function updateToServer() {
+  let res = await fetch(`http://localhost:3000/users/1`, {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    method: 'PUT',
+    body: JSON.stringify(model.user),
+  })
+    .then(function (res) {
+      console.log(res);
+    })
+    .catch(function (res) {
+      console.log(res);
+    });
+  console.log(res);
+}
+
+async function getLogIn() {
+  let checkLogin;
+
+  const res = await fetch('http://localhost:3000/users');
+
+  checkLogin = await res.json();
+
+  console.log(checkLogin);
+  console.log(checkLogin[0].email);
+  console.log(checkLogin[0].password);
+  if (
+    document.getElementById('email').value == checkLogin[0].email &&
+    document.getElementById('password').value == checkLogin[0].password
+  ) {
+    changeToMain();
+    saveInfoToMemory();
+    showMainPage();
+  }
 }
