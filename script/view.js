@@ -6,6 +6,8 @@ function whatPage() {
   }
   if (model.page === 'main') {
     showMainPage();
+  } else if (model.page === 'first') {
+    showFirstPage();
   } else {
     signUpScreen();
   }

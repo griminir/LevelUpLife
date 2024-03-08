@@ -33,10 +33,10 @@ app.post('/users', (req, res) => {
   });
 });
 
-app.put('/users', (req, res) => {
+app.put('/users/:id', (req, res) => {
   const { email, password } = req.body;
   console.log('ID: ' + req.params.id);
-  updateItem(req.params.id, email, password, (err) => {
+  updateItem(parseInt(req.params.id), email, password, (err) => {
     if (err) {
       console.log('ERROR: ' + err);
       res.status(500).send(err.message);
@@ -147,6 +147,7 @@ function signUp() {
   getEmail();
   getPassword();
   updateToServer();
+  changeToFirstpage();
   if (model.user.email != 'admin' && model.user.password != 'blood3') {
     saveInfoToMemory();
     showFirstPage();
@@ -188,6 +189,11 @@ function logOut() {
 //denne funksjonen setter pages til main slik at husker at du er innlogget
 function changeToMain() {
   model.page = 'main';
+  localStorage.setItem('page', model.page);
+}
+
+function changeToFirstpage() {
+  model.page = 'first';
   localStorage.setItem('page', model.page);
 }
 
